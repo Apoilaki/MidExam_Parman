@@ -1,0 +1,13 @@
+---
+- name: LAMP-desu
+  hosts: ubuntuws
+  pre_tasks:
+  - name: Update Repository Index (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+- name: LAMP STACK-desu 
+  hosts: ubuntuws
+  gather_facts: no
+  roles:
+    - LAMP

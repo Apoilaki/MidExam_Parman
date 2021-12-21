@@ -1,0 +1,19 @@
+---
+- name: install transport https
+  hosts: all
+  become: true
+  
+  tasks: 
+  - name: installing transport https
+    apt:
+      name: apt-transport-https
+      state: latest
+      when: ansible_distribution== "Ubuntu"
+  - name: installing httpd (CentOS)
+    yum: 
+      name: httpd
+      state: latest
+      when: ansible_distribution== "CentOS"
+  - name: RUN THIS COMMAND MADERFAQER
+    shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee –a /etc/apt/sources.list.d/elastic-7.x.list
+    when: ansible_distribution== "Ubuntu"

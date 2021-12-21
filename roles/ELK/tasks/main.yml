@@ -1,0 +1,184 @@
+#ElK Dependencies <Start>
+- name: Install Elk Dependencies (Ubuntu)
+  apt:
+    name:
+      - openjdk-11-jdk
+      - apt-transport-https
+      - curl
+      - gpgv
+      - gpgsm
+      - gnupg-l10n
+      - gnupg
+      - dirmngr
+    state: latest
+    update_cache: true
+
+#ELK Dependencies <END>
+
+#Elasticsearch Installation <START>
+
+- name: GET PGP key (Ubuntu)
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Install Elasticsearch repository into source list (Ubuntu)
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+
+- name: Install Elasticsearch (Ubuntu)
+  apt:
+    name: elasticsearch
+    state: latest
+    update_cache: yes
+
+
+#Elasticsearch Installation <END>
+
+#Elasticsearch Configuration <Start>
+- name: Configure Elasticsearch change cluster name (Ubuntu)
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    line: "cluster.name: demo-elk"
+    state: present
+
+
+- name: Configure Elasticsearch give cluster descriptive name (Ubuntu)  
+  lineinfile:  
+    dest: /etc/elasticsearch/elasticsearch.yml
+    line: "node.name: elk-1"
+    state: present
+
+
+- name: Configure Elasticsearch Add network.host (Ubuntu)
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    line: "network.host: 127.0.0.1"
+    state: present
+
+- name: Configure Elasticsearch Add http.port (Ubuntu)
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    line: "http.port: 9200"
+    state: present
+
+- name: Configure Elasticsearch Add discovery.type (Ubuntu)
+  lineinfile:
+    dest: /etc/elasticsearch/elasticsearch.yml
+    line: "discovery.type: single-mode"
+    state: present
+
+- name: Creating an emptyfile for startup-timeout.conf 1 of 2(Ubuntu)
+  file:
+    path: "/etc/systemd/system/elasticsearch.service.d/"
+    state: directory
+    
+
+- name: Creating an emptyfile for startup-timeout.conf 2 of 2(Ubuntu)
+  file:
+    path: "/etc/systemd/system/elasticsearch.service.d/startup-timeout.conf"
+    state: touch
+
+- name: Prevent systemd service start operation from timing out (Ubuntu)
+  copy :
+    dest: "/etc/systemd/system/elasticsearch.service.d/startup-timeout.conf"
+    content: |
+      [Service]
+      TimeoutStartSec=10min
+#Elasticsearch Configuration <END>
+
+#Elasticsearch Enable Services <START>
+- name: Run daemon-reload for elasticsearch (Ubuntu)
+  systemd: daemon_reload=yes
+
+- name: Enable service Elasticsearch and ensure it is not masked (Ubuntu)
+  systemd:
+    name: elasticsearch
+    enabled: yes
+    masked: no
+
+- name: ensure elasticsearch is running (Ubuntu)
+  systemd: 
+    state: started 
+    name: elasticsearch 
+
+#Elasticsearch Enable Services<END>
+
+#Logstash Installation <START>
+
+- name: Install Logstash (Ubuntu)
+  apt:
+    name: logstash
+    state: latest
+    update_cache: yes
+
+#Logstash Installation <END>
+
+#Logstash Enable Services <START>
+
+- name: Run daemon-reload for logstash
+  systemd: daemon_reload=yes
+
+- name: Enable service logstash (Ubuntu)
+  systemd:
+    name: logstash
+    enabled: yes
+
+#- name: ensure logstash is runnign (Ubuntu)
+#  systemd: state=started name=logstash
+
+#Logstash Enable Services <END>
+
+#Kibana Installation <START>
+
+- name: Install Kibana
+  apt:
+    name: kibana
+    state: latest
+    update_cache: yes
+#Kibara Installation <END>
+
+#Kibana Configuration <START>
+
+- name: Configure Kibana Add server.port (Ubuntu)
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: "server.port:5601"
+    state: present
+
+- name: Configure Kibana Add server.host (Ubuntu)
+  lineinfile: 
+    dest: /etc/kibana/kibana.yml
+    line: 'server.host="0.0.0.0"'
+    state: present
+- name: Configure Kibana Add server.name (Ubuntu)
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: 'server.name="demo-kibana"'
+    state: present
+
+- name: Configure Kibana Add server.name (Ubuntu) 
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: 'elasticsearch.hosts: ["http://0.0.0.0:9200"]'
+    state: present
+
+#Kibana Configuration <END>
+
+#Kibana Enable Services <START>
+
+- name: Run daemon-reload for kibana (Ubuntu)
+  systemd: daemon_reload=yes
+
+- name: Enable service Kibana (Ubuntu)
+  systemd:
+    name: kibana
+    enabled: yes
+
+#Kibana Enable Services <END> 
+
+#Start Elasticsearch & Kibana <START
+- name: Start Elasticsearch & Kibana (Ubuntu)
+  shell: "systemctl start elasticsearch && systemctl start kiban"
+#Start Elasticsearch & Kibana <END>

@@ -1,0 +1,54 @@
+#LAMP Dependencies <START
+- name: Install LAMP Dependencies (Ubuntu)
+  apt:
+    name:
+      - apache2
+      - mariadb-server
+      - mariadb-client
+      - software-properties-common
+      - php7.4
+      - php7.4-mysql
+      - php7.4-curl
+      - php7.4-json
+      - php7.4-cgi
+      - php7.4-xsl
+      - php7.4-cgi
+      - php7.4-gd
+      - php7.4-mbstring
+      - php7.4-zip
+      - php7.4-xmlrpc
+      - php7.4-soap
+      - php7.4-intl
+      - libapache2-mod-php
+    state: latest
+    update_cache: true
+ 
+#LAMP Dependencies <END>
+
+#PHP Repos <START>
+- name: PHP repository
+  apt_repository:
+    repo="ppa:ondrej/php"
+   
+
+#PHP Repos <END>
+
+#Enable LAMP services <START>
+- name: Run daemon-reload  
+  systemd: daemon_reload=yes
+
+- name: Enable service Apache
+  systemd:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: Enable service Mariadb
+  systemd:
+    name: mariadb
+    state: started
+    enabled: yes
+#Eable LAMP services <END>
+
+
+

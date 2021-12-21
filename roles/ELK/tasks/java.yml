@@ -1,0 +1,16 @@
+---
+- name: Install Java
+  hosts: all
+  become: true
+  
+  tasks:
+  - name: Install java (debian)
+    apt:
+      name: openjdk-8-jdk
+      state: latest
+    when: ansible_distribution== "Ubuntu"
+  - name: Install java (centos)
+    dnf:
+      name: java-1.8.0-openjdk-devel
+      state: latest
+    when: ansible_distribution== "CentOS"

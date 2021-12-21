@@ -1,0 +1,53 @@
+#Kibana Installation <START>
+- name: Install Kibana
+  apt:
+    name: kibana
+    state: latest
+    update_cache: yes
+#Kibara Installation <END>
+
+#Kibana Configuration <START>
+
+- name: Configure Kibana Add server.port (Ubuntu)
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: "server.port:5601"
+    state: present
+
+- name: Configure Kibana Add server.host (Ubuntu)
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: 'server.host="0.0.0.0"'
+    state: present
+
+- name: Configure Kibana Add server.name (Ubuntu)
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: 'server.name="demo-kibana"'
+    state: present
+
+- name: Configure Kibana Add server.name (Ubuntu)
+  lineinfile:
+    dest: /etc/kibana/kibana.yml
+    line: 'elasticsearch.hosts: ["http://0.0.0.0:9200"]'
+    state: present
+
+#Kibana Configuration <END>
+
+#Kibana Enable Services <START>
+
+- name: Run daemon-reload for kibana (Ubuntu)
+  systemd: daemon_reload=yes
+
+- name: Enable service Kibana (Ubuntu)
+  systemd:
+    name: kibana
+    enabled: yes
+
+#Kibana Enable Services <END> 
+
+#Start Elasticsearch & Kibana <START
+- name: Start Elasticsearch & Kibana (Ubuntu)
+  shell: "sudo systemctl start kiban"
+#Start Elasticsearch & Kibana <END>
+

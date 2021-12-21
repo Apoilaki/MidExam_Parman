@@ -1,0 +1,17 @@
+[ubuntu]
+rrtparman1@192.168.100.127
+rrtparmanws@192.168.100.136
+192.168.100.129
+[centos]
+rrtparmancos1@192.168.100.140
+[nagios_user]
+rrtparmancos@192.168.100.140
+[grafana_user]
+rrtparmanws@192.168.100.136
+[promotheus_user]
+rrtparman1@192.168.100.127
+[influxdb_user]
+rrtparmanws@192.168.100.136
+[ubuntuws]
+rrtparmanws@192.168.100.136
+

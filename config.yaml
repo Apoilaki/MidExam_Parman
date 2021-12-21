@@ -1,0 +1,24 @@
+---
+- name: ELK 
+  hosts: ubuntuws
+  pre_tasks:
+  - name: Update Repository Index (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+    changed_when: false
+- name: ELK STACK 
+  hosts: ubuntuws
+  roles:
+    - ELK 
+
+- name: Kibana-desu
+  hosts: ubuntuws
+  gather_facts: no
+  roles:
+    - Kibana
+- name: Lamp-stack-desu
+  hosts: ubuntuws
+  gather_facts: no
+  roles: 
+    - LAMP

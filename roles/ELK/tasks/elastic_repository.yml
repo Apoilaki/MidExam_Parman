@@ -1,0 +1,11 @@
+---
+- name: Add Elastic Repository
+  hosts: all
+  become: true
+  
+  tasks: 
+  - name: apt-signing key for elasticsearch
+    ansible.builtin.apt_key:
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch 
+      state: present
+   

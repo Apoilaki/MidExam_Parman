@@ -1,0 +1,16 @@
+---
+- name: NGINX installation
+  hosts: all 
+  become: true
+  
+  tasks:
+  - name: installing nginx (debian)
+    apt: 
+      name: nginx
+      state: latest
+    when: ansible_distribution== "Ubuntu"
+  - name: installing nginx (Centos)
+    dnf: 
+      name: nginx 
+      state: latest
+    when: ansible_distribution== "CentOS" 
